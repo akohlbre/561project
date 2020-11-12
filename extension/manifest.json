@@ -1,0 +1,23 @@
+{
+    "name": "Sharing pages across users",
+    "version": "1.0",
+    "description": "Our 561 group project",
+
+    // this defines the code that runs as soon as the extension starts up
+    "background": {
+        // we can probably have just this one page, and run everything else from there
+        "scripts": ["background.js"],
+        "persistent": true
+    },
+
+    // this is what the user sees when they click our button in the toolbar
+    //  we can change it as the extension runs, e.g. if we wanted to have two versions
+    "browser_action": {
+        "default_popup": "popup.html",
+        "default_icon": {
+            "48": "icons/eye-48.png"
+        }
+    },
+
+    "manifest_version": 2
+}
