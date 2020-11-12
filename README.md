@@ -19,6 +19,7 @@ Once the extension is loaded, you can view logging output:
 1. Under "Inspect views", click "background page"
 1. Use the tabs at the top to view console output, network activity, etc
 
-If you use `web-ext`, it will automatically update the extension whenever you edit a file that's
+If you use `web-ext`, it will automatically update (note: this feature seems to be buggy)
+the extension whenever you edit a file that's
 part of the extension. Otherwise, you will need to click the "Update" button on the extension's
 page on `chrome://extensions`.
