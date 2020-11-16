@@ -13,15 +13,7 @@ shareButton.addEventListener('click', function() {
   });
 
 })
-const net = require('net');
+
 function shareTo(name, url) {
   console.log("Sharing " + url + " to Pi");
-  const client = new net.Socket();
-  client.connect({ port: 10000 }, "ec2-3-22-221-12.us-east-2.compute.amazonaws.com", () => {
-    client.write("Hi Pi");
-  });
-  client.on('data', (data) => {
-    console.log("Server says: ${data.toString('utf-8')}");
-    client.destroy();
-  });
 }
