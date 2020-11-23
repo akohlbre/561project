@@ -2,6 +2,7 @@
 
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from io import BytesIO
+import time
 
 HOST_NAME = ""
 PORT_NUMBER = 8080
@@ -46,10 +47,10 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
 
 if __name__ == '__main__':
     httpd = HTTPServer((HOST_NAME, PORT_NUMBER), HTTPRequestHandler)
-    print time.asctime(), "Server Startes = %s:%s" % (HOST_NAME, PORT_NUMBER)
+    print(time.asctime(), "Server Startes = %s:%s" % (HOST_NAME, PORT_NUMBER))
     try:
-        httpd.server_forever()
+        httpd.serve_forever()
     except KeyboardInterrupt:
         pass
     httpd.server_close()
-    print time.asctime(), "Server Stops - %s:%s" % (HOST_NAME, PORT_NUMBER)
+    print(time.asctime(), "Server Stops - %s:%s" % (HOST_NAME, PORT_NUMBER))
