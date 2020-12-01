@@ -46,29 +46,15 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
                 '''Check if a tab has been shared with this client host'''
                 (client_host, client_port) = self.client_address
                 client_host = address_book[client_host]
-                #URL, sender_host = URL_hash_table.get(client_host, ("",""))
-                L = URL_hash_table.get(client_host, (""))
+                L = URL_hash_table.get(client_host, [])
                 '''Remove the client_host-(URL,sender) key-value pair from the hash table'''
                 if (L):
-                    response = BytesIO()
-                    for (URL, sender_host) in L:
-                        response.write((URL + ":" sender_host).encode("utf8"))
                     URL_hash_table.pop(client_host)
-                    '''Send over URL:sender_host'''
-                    self.wfile.write(response.getvalue())
-                else:
-                    self.wfile.write("".encode("utf8"))
+                '''Send over URL:sender_host'''
+                self.wfile.write(json.dumps(L).encode("utf8"))
             elif (jsonBody["type"] == "checkNames"):
                 '''Send over a list of all registered names'''
-                neighbors = str(all_names).encode("utf8")
-                self.wfile.write(neighbors)
-                
-            '''********************************************************'''
-            '''************************Debugging***********************'''
-            '''********************************************************'''
-            print(self.headers)
-            print("AB", address_book)
-            print("UHT", URL_hash_table)
+                self.wfile.write(json.dumps(list(all_names)).encode("utf8"))
 
         '''Respond to a PUT request'''
         def do_POST(self):
@@ -86,6 +72,9 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
                 recipient_host = jsonBody["recipientName"]
                 URL = jsonBody["url"]
                 sender_host = address_book[self.client_address[0]]
+                if (recipient_host not in address_book):
+                    self.wfile.write("This person is not in the address book".encode("utf8"))
+                    return
                 if (recipient_host not in URL_hash_table):
                     URL_hash_table[recipient_host] = [(URL, sender_host)]
                 else:
@@ -99,20 +88,6 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
                     (client_host, client_port) = self.client_address
                     address_book[client_host] = name
                     all_names.add(name)
-
-            '''********************************************************'''
-            '''************************Debugging***********************'''
-            '''********************************************************'''
-            print(self.headers)
-            print("AB", address_book)
-            print("UHT", URL_hash_table)
-            # response = BytesIO()
-            # response.write(b'This is POST request. ')
-            # response.write(b'Received: ')
-            # response.write(body)
-            # self.wfile.write(response.getvalue())
-
-
 
 if __name__ == '__main__':
     httpd = HTTPServer((HOST_NAME, PORT_NUMBER), HTTPRequestHandler)
