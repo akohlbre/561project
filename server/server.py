@@ -46,13 +46,18 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
                 '''Check if a tab has been shared with this client host'''
                 (client_host, client_port) = self.client_address
                 client_host = address_book[client_host]
-                URL, sender_host = URL_hash_table.get(client_host, ("",""))
+                #URL, sender_host = URL_hash_table.get(client_host, ("",""))
+                L = URL_hash_table.get(client_host, (""))
                 '''Remove the client_host-(URL,sender) key-value pair from the hash table'''
-                if (URL != "" or sender_host != ""): 
+                if (L):
+                    response = BytesIO()
+                    for (URL, sender_host) in L:
+                        response.write((URL + ":" sender_host).encode("utf8"))
                     URL_hash_table.pop(client_host)
-                '''Send over URL:sender_host'''
-                response = (URL + ":" + sender_host).encode("utf8")
-                self.wfile.write(response)
+                    '''Send over URL:sender_host'''
+                    self.wfile.write(response.getvalue())
+                else:
+                    self.wfile.write("".encode("utf8"))
             elif (jsonBody["type"] == "checkNames"):
                 '''Send over a list of all registered names'''
                 neighbors = str(all_names).encode("utf8")
@@ -81,7 +86,10 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
                 recipient_host = jsonBody["recipientName"]
                 URL = jsonBody["url"]
                 sender_host = address_book[self.client_address[0]]
-                URL_hash_table[recipient_host] = (URL, sender_host)
+                if (recipient_host not in URL_hash_table):
+                    URL_hash_table[recipient_host] = [(URL, sender_host)]
+                else:
+                    URL_hash_table[recipient_host.append((URL, sender_host))
             elif (jsonBody["type"] == "register"):
                 '''Add the name of this client host in the address book'''
                 name = jsonBody["name"]
