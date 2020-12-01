@@ -46,13 +46,13 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
                 '''Check if a tab has been shared with this client host'''
                 (client_host, client_port) = self.client_address
                 client_host = address_book[client_host]
-                URL = URL_hash_table.get(client_host, "")
-                '''Remove the client_host-URL key-value pair from the hash table'''
-                if (URL != ""): 
+                URL, sender_host = URL_hash_table.get(client_host, ("",""))
+                '''Remove the client_host-(URL,sender) key-value pair from the hash table'''
+                if (URL != "" or sender_host != ""): 
                     URL_hash_table.pop(client_host)
-                '''Send over URL'''
-                URL = URL.encode("utf8")
-                self.wfile.write(URL)
+                '''Send over URL:sender_host'''
+                response = (URL + ":" + sender_host).encode("utf8")
+                self.wfile.write(response)
             elif (jsonBody["type"] == "checkNames"):
                 '''Send over a list of all registered names'''
                 neighbors = str(all_names).encode("utf8")
@@ -78,14 +78,15 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
             jsonBody = unpack(body)
             if (jsonBody["type"] == "share"):
                 '''Add the shared tab in the URL dictionary'''
-                target_host = jsonBody["recipientName"]
+                recipient_host = jsonBody["recipientName"]
                 URL = jsonBody["url"]
-                URL_hash_table[target_host] = URL
+                sender_host = address_book[self.client_address[0]]
+                URL_hash_table[recipient_host] = (URL, sender_host)
             elif (jsonBody["type"] == "register"):
                 '''Add the name of this client host in the address book'''
                 name = jsonBody["name"]
                 if (name in all_names):
-                    resonse.write(b'This client is already registered')
+                    self.wfile.write('This client is already registered'.encode("utf8"))
                 else:
                     (client_host, client_port) = self.client_address
                     address_book[client_host] = name
