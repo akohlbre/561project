@@ -6,7 +6,7 @@
     // this defines the code that runs as soon as the extension starts up
     "background": {
         // we can probably have just this one page, and run everything else from there
-        "scripts": ["background.js"],
+        "page": "background.html",
         "persistent": true
     },
 
