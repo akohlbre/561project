@@ -19,4 +19,5 @@ shareButton.addEventListener('click', function() {
 function shareTo(name, url) {
     console.log("Sharing " + url + " to Anne");
     communication.sendUrl(url, name)
+            .catch(communication.handleError.bind(null, "sharing tab"));
 }

@@ -8,34 +8,33 @@ function sayHello() {
     console.log("Extension running!");
 }
 
-// Called when the user clicks on the browser action.
-chrome.browserAction.onClicked.addListener(function(tab) {
-    // No tabs or host permissions needed!
-    console.log('Turning ' + tab.url + ' red!');
-
-});
-
 function startup() {
     sayHello();
-    communication.sendName("Anne");
+    communication.sendName("Anne")
+        .catch(communication.handleError.bind(null, "sending name"));
+    communication.getAddressBook()
+        .then((addressBook) => {
+            console.log("Address Book:", addressBook);
+        })
+        .catch(communication.handleError.bind(null, "getting address book"));
 }
 
-function checkForShares(name) {
-    communication.getData(name).then((serverResponse) => {
-        serverResponse.text().then((textResponse) => {
-            if (textResponse && textResponse != "") {
+function openSharedTabs() {
+    communication.checkForTabs()
+        .then((sharedTabs) => {
+            for (let sharedTab of sharedTabs){
                 chrome.tabs.create({
                     active: true,
-                    url: textResponse,
+                    url: sharedTab[0],
                 });
             }
-        });
-    });
+        })
+        .catch(communication.handleError.bind(null, "sharing tab"));
 }
 
-function pollForShares(name, interval=10) {
-    window.setInterval(checkForShares, interval * millisecondsPerSecond, name);
+function pollForShares(interval=10) {
+    window.setInterval(openSharedTabs, interval * millisecondsPerSecond);
 }
 
 startup();
-pollForShares("Anne");
+pollForShares();
