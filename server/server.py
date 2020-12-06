@@ -101,7 +101,7 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
 
 if __name__ == '__main__':
     httpd = HTTPServer((HOST_NAME, PORT_NUMBER), HTTPRequestHandler)
-    print(time.asctime(), "Server Startes = %s:%s" % (HOST_NAME, PORT_NUMBER))
+    print(time.asctime(), "Server Starts = %s:%s" % (HOST_NAME, PORT_NUMBER))
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:

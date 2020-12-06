@@ -1,4 +1,5 @@
-import * as communication from "./communication.js"
+import * as communication from "./communication.js";
+import { receiveTabs } from "./popup.js";
 let done = false;
 
 const millisecondsPerSecond = 1000;
@@ -22,12 +23,7 @@ function startup() {
 function openSharedTabs() {
     communication.checkForTabs()
         .then((sharedTabs) => {
-            for (let sharedTab of sharedTabs){
-                chrome.tabs.create({
-                    active: true,
-                    url: sharedTab[0],
-                });
-            }
+            receiveTabs(sharedTabs);
         })
         .catch(communication.handleError.bind(null, "sharing tab"));
 }

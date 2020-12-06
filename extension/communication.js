@@ -98,4 +98,3 @@ export function sendUrl(url, recipientName) {
     };
     return postData(JSON.stringify(toSend));
 }
-
