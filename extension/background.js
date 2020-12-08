@@ -11,8 +11,6 @@ function sayHello() {
 
 function startup() {
     sayHello();
-    communication.sendName("Anne")
-        .catch(communication.handleError.bind(null, "sending name"));
     communication.getAddressBook()
         .then((addressBook) => {
             console.log("Address Book:", addressBook);

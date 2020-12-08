@@ -10,11 +10,16 @@ button {
         </style>
     </head>
     <body>
-      <div id="share">
-        <button id="shareButton">Share</button>
-      </div>
-      <div id="receive">
-      </div>
+        <form>
+            <label for="username">Name:</label>
+            <input type="text" id="username" name="username"><br><br>
+            <input type="submit" value="Submit" id="submit">
+        </form>
+        <div id="share">
+            <button id="shareButton">Share</button>
+        </div>
+        <div id="receive">
+        </div>
         <script type="module" src="popup.js"></script>
         <script type="module" src="background.js"></script>
     </body>
