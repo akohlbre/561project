@@ -56,6 +56,7 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
                 if (L):
                     URL_hash_table.pop(client_host)
                 '''Send over URL:sender_host'''
+                print(L)
                 self.wfile.write(json_pack({"urls": L}))
             elif (resource == "/checkNames"):
                 '''Send over a list of all registered names'''
